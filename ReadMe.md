@@ -48,97 +48,95 @@
 
 ### 状态与输入
 
-$$
-q=\begin{bmatrix}x_b\\ y_b\\ \psi\\ q_{a,1}\\ \vdots\\ q_{a,7}\end{bmatrix}\in\mathbb{R}^{10},\qquad
-\tau=\begin{bmatrix}\tau_{w,1}\\ \vdots\\ \tau_{w,4}\\ \tau_{a,1}\\ \vdots\\ \tau_{a,7}\end{bmatrix}\in\mathbb{R}^{11},\qquad
-\zeta=\begin{bmatrix}\dot{x}_b\\ \dot{y}_b\\ \dot{\psi}\end{bmatrix}\in\mathbb{R}^{3} \tag{1}
-$$
+```latex
+q = [x_b, y_b, psi, q_{a,1}, ..., q_{a,7}]^T in R^10
+tau = [tau_{w,1}, ..., tau_{w,4}, tau_{a,1}, ..., tau_{a,7}]^T in R^11
+zeta = [xdot_b, ydot_b, psidot]^T in R^3
+```
 
-关节限位 $q_{a,j}\in[\ell_j,\,h_j]$。$J^{+}$ 为截断伪逆（$rcond=10^{-6}$），$\mathbf{1}\{\cdot\}$ 为示性函数。
+关节限位 `q_{a,j} in [ell_j, h_j]`。`J^{+}` 为截断伪逆（`rcond=1e-6`），`1{.}` 为示性函数。
 
 ### 差速底盘
 
-$$
-R_z(\psi)=\begin{bmatrix}\cos\psi&-\sin\psi&0\\ \sin\psi&\cos\psi&0\\ 0&0&1\end{bmatrix},\quad
-R_{w2b}=R_z^\top(\psi),\quad
-u_{body}=R_{w2b}\,\zeta \tag{2}
-$$
+```latex
+R_z(psi) = [cos(psi)  -sin(psi)  0;  sin(psi)  cos(psi)  0;  0  0  1]
+R_{w2b} = R_z^T(psi)
+u_body = R_{w2b} zeta
+```
 
-$$
-r=0.12,\quad L=0.2225+0.2045=0.427,\quad
-K=\begin{bmatrix}1&1&L\\ 1&-1&-L\\ 1&-1&L\\ 1&1&-L\end{bmatrix},\quad
-\omega_w=J_w\,u_{body},\quad J_w=\frac{1}{r}K \tag{3}
-$$
+```latex
+r = 0.12,  L = 0.2225 + 0.2045 = 0.427
+K = [1  1   L;  1  -1  -L;  1  -1  L;  1  1  -L]
+omega_w = J_w u_body,  J_w = (1/r) K
+```
 
 ### 末端雅可比
 
-$$
-\dot{x}_e=\begin{bmatrix}\dot{p}_{ee}\\ \omega_{ee}\end{bmatrix}=J_e(q)\dot{q},\quad
-J_e=[\,J_b\mid J_a\,]\in\mathbb{R}^{6\times 10} \tag{4}
-$$
+```latex
+xdot_e = [pdot_ee; omega_ee] = J_e(q) qdot,  J_e = [J_b | J_a] in R^{6 x 10}
+```
 
-$$
-J_b^{(\mathrm{lin})}=[\,e_x\ \ e_y\ \ \hat{z}\times(p_{ee}-p_b)\,],\quad
-J_b^{(\mathrm{ang})}=[\,\mathbf{0}_{2\times 3}\ \ \hat{z}\,]^\top \tag{5}
-$$
+```latex
+J_b^(lin) = [e_x, e_y, z_hat x (p_ee - p_b)]
+J_b^(ang) = [0_{2x3}, z_hat]^T
+```
 
-$$
-J_a^{(\mathrm{lin})}[\cdot,i]=z_i\times(p_{ee}-p_i),\quad
-J_a^{(\mathrm{ang})}[\cdot,i]=z_i,\quad
-J_p=J_e^{[1:3,:]},\ J_r=J_e^{[4:6,:]} \tag{6}
-$$
+```latex
+J_a^(lin)[.,i] = z_i x (p_ee - p_i)
+J_a^(ang)[.,i] = z_i
+J_p = J_e[1:3, :],  J_r = J_e[4:6, :]
+```
 
 ### 姿态误差（世界系，最短路径）
 
-$$
-q_{err}=Q^{*}\otimes Q_{ee}^{-1}=(\eta,\boldsymbol{\varepsilon}),\qquad
-q_{err}\leftarrow-q_{err}\ \ \text{if}\ \eta<0 \tag{7}
-$$
+```latex
+q_err = Q* (x) Q_ee^{-1} = (eta, epsilon)
+q_err <- -q_err  if eta < 0
+```
 
-$$
-e_R=\theta\,\hat{\boldsymbol{\varepsilon}},\quad
-\theta=2\arctan2(\|\boldsymbol{\varepsilon}\|,\eta),\quad
-\hat{\boldsymbol{\varepsilon}}=\frac{\boldsymbol{\varepsilon}}{\|\boldsymbol{\varepsilon}\|}\quad(\|\boldsymbol{\varepsilon}\|=0\Rightarrow e_R=0) \tag{8}
-$$
+```latex
+e_R = theta * epsilon_hat
+theta = 2 * atan2(||epsilon||, eta)
+epsilon_hat = epsilon / ||epsilon||  (||epsilon|| = 0 => e_R = 0)
+```
 
 ### 动力学
 
-$$
-M(q)\ddot{q}+C(q,\dot{q})\dot{q}+G(q)=B(q)\tau+\tau_{passive}(q,\dot{q})+d(t) \tag{9}
-$$
+```latex
+M(q) qddot + C(q, qdot) qdot + G(q) = B(q) tau + tau_passive(q, qdot) + d(t)
+```
 
-$$
-\ddot{q}=M^{-1}(B\tau-h+d),\qquad h\triangleq C\dot{q}+G-\tau_{passive} \tag{10}
-$$
+```latex
+qddot = M^{-1} (B tau - h + d),  h := C qdot + G - tau_passive
+```
 
-$h$ 逐 DOF 读自 `qfrc_bias − qfrc_passive`。集中扰动为
+`h` 逐 DOF 读自 `qfrc_bias - qfrc_passive`。集中扰动为
 
-$$
-d=\underbrace{-J_e^\top F_{ext}}_{\text{接触}}
-+\underbrace{\tau_{fric}}_{\text{摩擦}}
-+\underbrace{(I-BB^{+})B\tau}_{\text{平面解耦残差}}
-+\underbrace{\tau_{sat}}_{\text{饱和}}
-+\underbrace{O(\Delta t)}_{\text{离散化}} \tag{11}
-$$
+```latex
+d = -J_e^T F_ext   (接触)
+  + tau_fric       (摩擦)
+  + (I - B B^+) B tau  (平面解耦残差)
+  + tau_sat        (饱和)
+  + O(dt)          (离散化)
+```
 
 ### 执行器映射
 
-$$
-B=\begin{bmatrix}T_f R_{w2b}&\mathbf{0}_{3\times 7}\\ \mathbf{0}_{7\times 4}&I_7\end{bmatrix},\quad
-T_f=\frac{r}{4}K\,\mathrm{diag}\Big(1,1,\tfrac{1}{L^2}\Big) \tag{12}
-$$
+```latex
+B = [T_f R_{w2b}   0_{3x7};   0_{7x4}   I_7]
+T_f = (r/4) K diag(1, 1, 1/L^2)
+```
 
-$$
-\tau_{phys}=\mathrm{sat}_{[\text{ctrlrange}]}(\tau_{cmd})\quad(\text{仅 ctrllimited 执行器；本模型 }0/11) \tag{13}
-$$
+```latex
+tau_phys = sat_[ctrlrange](tau_cmd)   (仅 ctrllimited 执行器；本模型 0/11)
+```
 
-力分配精确性——由 $K^\top K=4\,\mathrm{diag}(1,1,L^2)$：
+力分配精确性——由 `K^T K = 4 diag(1, 1, L^2)`：
 
-$$
-\frac{1}{r}K^\top T_f=I_3
-\quad\Longrightarrow\quad
-R_z(\psi)\,\tfrac{1}{r}K^\top\tau_w=\tau_{\sigma,[0:3]} \tag{14}
-$$
+```latex
+(1/r) K^T T_f = I_3
+=> R_z(psi) (1/r) K^T tau_w = tau_sigma[0:3]
+```
 
 ---
 
@@ -146,44 +144,45 @@ $$
 
 ### 参考轨迹（全版本一致）
 
-$$
-p_d(t)=\begin{bmatrix}\cos(0.2t)\\ \sin(0.2t)\\ 0.7\end{bmatrix},\quad
-\dot{p}_d=0.2\begin{bmatrix}-\sin(0.2t)\\ \cos(0.2t)\\ 0\end{bmatrix},\quad
-Q^{*}=[0,1,0,0]^\top,\quad \omega_d\equiv 0 \tag{15}
-$$
+```latex
+p_d(t) = [cos(0.2 t); sin(0.2 t); 0.7]
+pdot_d = 0.2 [-sin(0.2 t); cos(0.2 t); 0]
+Q* = [0, 1, 0, 0]^T,  omega_d = 0
+```
 
-$$
-e_p=p_d-p_{ee},\qquad e_R\ \text{由 (8) 给出} \tag{16}
-$$
+```latex
+e_p = p_d - p_ee,  e_R 由姿态误差公式给出
+```
 
 ### 分通道向量饱和（全版本一致）
 
-$$
-\mathrm{sat}_a(x)=\frac{a}{\max(\|x\|,a)}\,x,\quad
-v_c=\mathrm{sat}_{0.6}(\dot{p}_d+10e_p),\quad
-\omega_c=\mathrm{sat}_{1.0}(\omega_d+2e_R) \tag{17}
-$$
+```latex
+sat_a(x) = (a / max(||x||, a)) x
+v_c = sat_{0.6}(pdot_d + 10 e_p)
+omega_c = sat_{1.0}(omega_d + 2 e_R)
+```
 
 ### 阻尼最小二乘主任务（全版本一致）
 
-$$
-\dot{q}_{task}=\arg\min_{\dot{q}}\ \Big\|J_e\dot{q}-\begin{bmatrix}v_c\\ \omega_c\end{bmatrix}\Big\|^2+\lambda^2\|\dot{q}\|^2
-\ \Longrightarrow\
-\dot{q}_{task}=J_e^\top(J_eJ_e^\top+\lambda^2 I_6)^{-1}\begin{bmatrix}v_c\\ \omega_c\end{bmatrix} \tag{18}
-$$
+```latex
+qdot_task = argmin_{qdot}  || J_e qdot - [v_c; omega_c] ||^2 + lambda^2 ||qdot||^2
+         => qdot_task = J_e^T (J_e J_e^T + lambda^2 I_6)^{-1} [v_c; omega_c]
+```
 
-$$
-w(q)=\sqrt{\det(J_pJ_p^\top)},\quad
-\lambda^2=\lambda_{\min}^2+\lambda_0^2\Big(1-\min\big(\tfrac{w}{w_{thr}},1\big)\Big)^2 \tag{19}
-$$
+```latex
+w(q) = sqrt(det(J_p J_p^T))
+lambda^2 = lambda_min^2 + lambda_0^2 (1 - min(w / w_thr, 1))^2
+```
 
-其中 $\lambda_{\min}=10^{-3}$，$\lambda_0=0.05$，$w_{thr}=0.02$。
+其中 `lambda_min = 1e-3`，`lambda_0 = 0.05`，`w_thr = 0.02`。
 
-### Slew 限变化（全版本一致，$S=2$）
+### Slew 限变化（全版本一致，`S = 2`）
 
-$$
-\dot{q}_{des}(t)=\dot{q}_{des}(t-\Delta t)+\min\Big(1,\ \frac{S\Delta t}{\|\dot{q}_{raw}-\dot{q}_{des}(t-\Delta t)\|_\infty}\Big)\big(\dot{q}_{raw}-\dot{q}_{des}(t-\Delta t)\big) \tag{20}
-$$
+```latex
+qdot_des(t) = qdot_des(t - dt)
+            + min(1, S dt / ||qdot_raw - qdot_des(t - dt)||_inf)
+              * (qdot_raw - qdot_des(t - dt))
+```
 
 ---
 
@@ -193,62 +192,64 @@ $$
 
 ### 零空间投影算子（全版本一致）
 
-$$
-N=I_{10}-J_e^{+}J_e,\qquad J_e N=0\ (\text{精确}),\qquad N^2=N \tag{21}
-$$
+```latex
+N = I_10 - J_e^+ J_e,  J_e N = 0 (精确),  N^2 = N
+```
 
 ### 任务 2 —— 奇异规避（全版本一致）
 
-$$
-g_{w,k}=\frac{w(q+\varepsilon_g e_k)-w(q)}{\varepsilon_g},\quad \varepsilon_g=10^{-5},\quad
-\dot{q}_{null}^{(w)}=k_{eff}\,N\,\frac{g_w}{\|g_w\|} \tag{22}
-$$
+```latex
+g_{w,k} = (w(q + eps_g e_k) - w(q)) / eps_g,  eps_g = 1e-5
+qdot_null^(w) = k_eff N (g_w / ||g_w||)
+```
 
-$$
-k_{eff}=0.5\,\mathrm{clip}\Big(\frac{0.5-\|e_p\|}{0.3},0,1\Big),\quad
-\text{启用}\iff k_{eff}>10^{-6}\wedge w>0.3\,w_{thr}\wedge\|g_w\|>10^{-12} \tag{23}
-$$
+```latex
+k_eff = 0.5 clip((0.5 - ||e_p||) / 0.3, 0, 1)
+启用 <=> k_eff > 1e-6  and  w > 0.3 w_thr  and  ||g_w|| > 1e-12
+```
 
 ### 任务 3 —— 限位回避
 
 **`ppc01_baseline.py`（v0）：** 该模块不存在。
 
-$$
-\dot{q}_{null}^{(\lim)}\equiv\mathbf{0}_7 \tag{24}
-$$
+```latex
+qdot_null^(lim) = 0_7
+```
 
 **`ppc02_mu_unclip.py` / `ppc03_reinit.py` / `ppc04_noclip.py` / `ppc05_fixed.py` / `ppc_onelayer_abl.py`（v1+）：** 排斥 + 刹车。
 
-$$
-s_j^-=\frac{d_m-(q_{a,j}-\ell_j)}{d_m},\quad
-s_j^+=\frac{d_m-(h_j-q_{a,j})}{d_m},\quad d_m=0.15,\ k_{\lim}=2 \tag{25}
-$$
+```latex
+s_j^- = (d_m - (q_{a,j} - ell_j)) / d_m
+s_j^+ = (d_m - (h_j - q_{a,j})) / d_m
+d_m = 0.15,  k_lim = 2
+```
 
-$$
-v_{rep,j}=k_{\lim}(s_j^-)^2\mathbf{1}\{q_{a,j}-\ell_j<d_m\}
--k_{\lim}(s_j^+)^2\mathbf{1}\{h_j-q_{a,j}<d_m\} \tag{26}
-$$
+```latex
+v_rep,j = k_lim (s_j^-)^2 1{q_{a,j} - ell_j < d_m}
+        - k_lim (s_j^+)^2 1{h_j - q_{a,j} < d_m}
+```
 
-$$
-(P\dot{q})_{3+j}=\dot{q}_{3+j}\cdot\mathbf{1}\Big\{\neg(h_j-q_{a,j}<d_b\wedge\dot{q}_{3+j}>0)
-\wedge\neg(q_{a,j}-\ell_j<d_b\wedge\dot{q}_{3+j}<0)\Big\},\quad d_b=0.05 \tag{27}
-$$
+```latex
+(P qdot)_{3+j} = qdot_{3+j} * 1{ not(h_j - q_{a,j} < d_b and qdot_{3+j} > 0)
+                           and not(q_{a,j} - ell_j < d_b and qdot_{3+j} < 0) }
+d_b = 0.05
+```
 
 ### 合成
 
 **`ppc01_baseline.py`（v0）：**
 
-$$
-\dot{q}_{raw}=\dot{q}_{task}+\dot{q}_{null}^{(w)} \tag{28}
-$$
+```latex
+qdot_raw = qdot_task + qdot_null^(w)
+```
 
 **`ppc02_mu_unclip.py` / `ppc03_reinit.py` / `ppc04_noclip.py` / `ppc05_fixed.py` / `ppc_onelayer_abl.py`（v1+）：**
 
-$$
-\dot{q}_{raw}=P\big(\dot{q}_{task}+\dot{q}_{null}^{(w)}+\dot{q}_{null}^{(\lim)}\big) \tag{29}
-$$
+```latex
+qdot_raw = P ( qdot_task + qdot_null^(w) + qdot_null^(lim) )
+```
 
-> **注。** 刹车算子作用于零空间投影之后，故仅当刹车激活时 $J_e P\dot{q}_{null}\neq 0$。残差并入 (11) 的 $d$。
+> **注。** 刹车算子作用于零空间投影之后，故仅当刹车激活时 `J_e P qdot_null != 0`。残差并入 (11) 的 `d`。
 
 ### 差异表
 
@@ -257,7 +258,7 @@ $$
 | 任务 1（末端跟踪） | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | 任务 2（奇异规避） | ✓ | ✓ | ✓ | ✓ | ✓ | ✓ |
 | 任务 3（限位回避） | **✗** | ✓ | ✓ | ✓ | ✓ | ✓ |
-| 合成 | $\dot{q}_{task}+\dot{q}_{null}^{(w)}$ | $P(\cdots+v_{rep})$ | 同 v1 | 同 v1 | 同 v1 | 同 v1 |
+| 合成 | qdot_task + qdot_null^(w) | P(... + v_rep) | 同 v1 | 同 v1 | 同 v1 | 同 v1 |
 
 ---
 
@@ -267,216 +268,230 @@ $$
 
 **`ppc01_baseline.py` / `ppc02_mu_unclip.py` / `ppc03_reinit.py` / `ppc04_noclip.py` / `ppc05_fixed.py`（两层版）：**
 
-$$
-q_d(0)=q(0)\ \text{精确 (P1)},\quad \dot{q}_d=\dot{q}_{des},\quad e_1=q-q_d,\quad e_{1,2}\leftarrow\mathrm{wrap}(e_{1,2}) \tag{30}
-$$
+```latex
+q_d(0) = q(0) 精确 (P1)
+qdot_d = qdot_des
+e_1 = q - q_d,  e_{1,2} <- wrap(e_{1,2})
+```
 
-$$
-\mathrm{wrap}(a)=(a+\pi)\bmod 2\pi-\pi \tag{31}
-$$
+```latex
+wrap(a) = (a + pi) mod (2 pi) - pi
+```
 
-**`ppc_onelayer_abl.py`（1L）：** 控制回路内无 $q_d$、$e_1$、$\mu_1$。保留诊断积分器但从不反馈：
+**`ppc_onelayer_abl.py`（1L）：** 控制回路内无 `q_d`、`e_1`、`mu_1`。保留诊断积分器但从不反馈：
 
-$$
-q_d^{diag}\leftarrow\int\dot{q}_{des},\qquad e_1^{diag}=q-q_d^{diag} \tag{32}
-$$
+```latex
+q_d^{diag} <- int(qdot_des)
+e_1^{diag} = q - q_d^{diag}
+```
 
-精确关系：$e_1^{diag}(t)=\int_0^t(\dot{q}-\dot{q}_{des})\,d\tau=\int_0^t(e_2+\xi)\,d\tau$，其中 $\xi\triangleq\alpha_f-\alpha$。
+精确关系：`e_1^{diag}(t) = int_0^t (qdot - qdot_des) d tau = int_0^t (e_2 + xi) d tau`，其中 `xi := alpha_f - alpha`。
 
 ### 漏斗函数
 
-$$
-\rho(t)=(\rho_0-\rho_\infty)\exp\!\Big(-\frac{\alpha' t}{T-t}\Big)+\rho_\infty,\quad \alpha'=2,\ T=10\ \mathrm{s} \tag{33}
-$$
+```latex
+rho(t) = (rho_0 - rho_inf) exp(-alpha' t / (T - t)) + rho_inf
+alpha' = 2,  T = 10 s
+```
 
 初值（全版本一致）：
 
-$$
-\rho_{1,0}=[0.20,0.20,0.30\mid 0.25^{\times 7}],\quad
-\rho_{2,0}=[2.5,2.5,2.0\mid 3.0^{\times 7}] \tag{34}
-$$
+```latex
+rho_{1,0} = [0.20, 0.20, 0.30 | 0.25 x7]
+rho_{2,0} = [2.5,  2.5,  2.0  | 3.0  x7]
+```
 
 终值（差异）：
 
 **`ppc01_baseline.py` / `ppc02_mu_unclip.py` / `ppc03_reinit.py`：**
 
-$$
-\rho_{1,\infty}=[0.15,0.15,0.20\mid 0.12^{\times 7}],\quad
-\rho_{2,\infty}=[0.20,0.20,0.20\mid 0.25^{\times 7}] \tag{35}
-$$
+```latex
+rho_{1,inf} = [0.15, 0.15, 0.20 | 0.12 x7]
+rho_{2,inf} = [0.20, 0.20, 0.20 | 0.25 x7]
+```
 
 **`ppc04_noclip.py`：**
 
-$$
-\rho_{1,\infty}=[0.05,0.05,0.05\mid 0.025^{\times 7}],\quad
-\rho_{2,\infty}=[0.10,0.10,0.10\mid 0.10^{\times 7}] \tag{36}
-$$
+```latex
+rho_{1,inf} = [0.05, 0.05, 0.05 | 0.025 x7]
+rho_{2,inf} = [0.10, 0.10, 0.10 | 0.10  x7]
+```
 
 **`ppc05_fixed.py`：**
 
-$$
-\rho_{1,\infty}=[0.05,0.05,0.05\mid 0.04^{\times 7}],\quad
-\rho_{2,\infty}=[0.10,0.10,0.10\mid 0.10^{\times 7}] \tag{37}
-$$
+```latex
+rho_{1,inf} = [0.05, 0.05, 0.05 | 0.04  x7]
+rho_{2,inf} = [0.10, 0.10, 0.10 | 0.10  x7]
+```
 
 **`ppc_onelayer_abl.py`：**
 
-$$
-\rho_{2,\infty}=[0.20,0.20,0.20\mid 0.25^{\times 7}],\quad
-\rho_{1,\infty}^{diag}=[0.15,0.15,0.20\mid 0.12^{\times 7}]\ \text{（仅作绘图参考线）} \tag{38}
-$$
+```latex
+rho_{2,inf} = [0.20, 0.20, 0.20 | 0.25 x7]
+rho_{1,inf}^{diag} = [0.15, 0.15, 0.20 | 0.12 x7]   (仅作绘图参考线)
+```
 
 ### 理想变换（v2–v4 与 1L 实现的数学对象）
 
-$$
-\varphi=\frac{e}{\rho(t)},\quad
-T(\varphi)=\ln\frac{0.9+\varphi}{0.9-\varphi}=2\,\mathrm{artanh}\Big(\frac{\varphi}{0.9}\Big) \tag{39}
-$$
+```latex
+phi = e / rho(t)
+T(phi) = ln((0.9 + phi) / (0.9 - phi)) = 2 artanh(phi / 0.9)
+```
 
-$$
-\mathcal{D}_t=\{e:|e|<0.9\rho(t)\},\quad T:\mathcal{D}_t\to\mathbb{R}\ \text{严格微分同胚} \tag{40}
-$$
+```latex
+D_t = {e : |e| < 0.9 rho(t)},  T : D_t -> R 严格微分同胚
+```
 
-$$
-T'(\varphi)=\frac{1.8}{0.81-\varphi^2}\ \geq\ k_T\triangleq T'(0)=\frac{1.8}{0.81}=2.2222,\quad
-\lim_{\varphi\to\pm 0.9}T'(\varphi)=+\infty \tag{41}
-$$
+```latex
+T'(phi) = 1.8 / (0.81 - phi^2)  >=  k_T := T'(0) = 1.8 / 0.81 = 2.2222
+lim_{phi -> +-0.9} T'(phi) = +inf
+```
 
-$$
-e=0.9\,\rho\tanh(\mu/2),\qquad \mathrm{sign}(e)=\mathrm{sign}(\mu) \tag{42}
-$$
+```latex
+e = 0.9 rho tanh(mu / 2),  sign(e) = sign(mu)
+```
 
 ### 各版本实际变换
 
 **`ppc01_baseline.py`（v0，双重饱和）：**
 
-$$
-\varphi_c=\mathrm{clip}(e/\rho,-0.899,0.899),\quad
-\mu=\mathrm{clip}(T(\varphi_c),-1,1) \tag{43}
-$$
+```latex
+phi_c = clip(e / rho, -0.899, 0.899)
+mu = clip(T(phi_c), -1, 1)
+```
 
-$$
-\frac{d\mu}{de}=\begin{cases}T'(\varphi)/\rho, & |\varphi|\le 0.9\tanh\tfrac{1}{2}=0.4159\\[4pt] 0, & 0.4159<|\varphi|<0.9\end{cases} \tag{44}
-$$
+```latex
+d mu / d e = T'(phi) / rho,   |phi| <= 0.9 tanh(1/2) = 0.4159
+          = 0,                0.4159 < |phi| < 0.9
+```
 
 **`ppc02_mu_unclip.py`（v1）：**
 
-$$
-\varphi_c=\mathrm{clip}(e/\rho,-0.899,0.899),\quad \mu=T(\varphi_c),\quad |\mu|\le T(0.899)=\ln 1799\approx 7.5 \tag{45}
-$$
+```latex
+phi_c = clip(e / rho, -0.899, 0.899)
+mu = T(phi_c)
+|mu| <= T(0.899) = ln 1799 ~ 7.5
+```
 
 **`ppc03_reinit.py` / `ppc04_noclip.py` / `ppc05_fixed.py` / `ppc_onelayer_abl.py`（v2+）：**
 
-$$
-\mu=T(e/\rho)\quad\text{（零截断，(39)–(42) 全部成立）} \tag{46}
-$$
+```latex
+mu = T(e / rho)   (零截断，(39)–(42) 全部成立)
+```
 
 ### Level-1 虚拟控制
 
 **`ppc01_baseline.py` / `ppc02_mu_unclip.py` / `ppc03_reinit.py` / `ppc04_noclip.py`：**
 
-$$
-\alpha=\dot{q}_{des}-\gamma_1\mu_1,\qquad \gamma_1=0.4 \tag{47}
-$$
+```latex
+alpha = qdot_des - gamma_1 mu_1,  gamma_1 = 0.4
+```
 
 **`ppc05_fixed.py`：**
 
-$$
-\alpha=\dot{q}_{des}-\gamma_1\mu_1,\qquad \gamma_1=0.25 \tag{48}
-$$
+```latex
+alpha = qdot_des - gamma_1 mu_1,  gamma_1 = 0.25
+```
 
 **`ppc_onelayer_abl.py`：**
 
-$$
-\text{INJECT}=0:\ \alpha=\dot{q}_{des};\qquad
-\text{INJECT}=1:\ \alpha=\dot{q}_{des}-K_I z,\quad K_I=2,\quad \dot{z}=e_2,\quad |z|\le 0.5 \tag{49}
-$$
+```latex
+INJECT = 0 :  alpha = qdot_des
+INJECT = 1 :  alpha = qdot_des - K_I z,  K_I = 2,  zdot = e_2,  |z| <= 0.5
+```
 
-> **恒等式。** 当 $z(0)=e_1(0)=0$，有 $z(t)=\int_0^t e_2\,d\tau=e_1(t)$。注入版等价于 $\alpha=\dot{q}_{des}-K_I e_1$——即去除变换的两层律（$\gamma_1\mapsto K_I$）。
+> **恒等式。** 当 `z(0) = e_1(0) = 0`，有 `z(t) = int_0^t e_2 d tau = e_1(t)`。注入版等价于 `alpha = qdot_des - K_I e_1`——即去除变换的两层律（`gamma_1 -> K_I`）。
 
 ### 命令滤波器（全版本一致）
 
-$$
-\dot{\alpha}_f=-\lambda_f(\alpha_f-\alpha),\quad \lambda_f=20,\quad \alpha_f(0)=0;\qquad \dot{\xi}=-\lambda_f\xi-\dot{\alpha} \tag{50}
-$$
+```latex
+alphadot_f = -lambda_f (alpha_f - alpha),  lambda_f = 20,  alpha_f(0) = 0
+xidot = -lambda_f xi - alphadot
+```
 
-$$
-e_2=\dot{q}-\alpha_f \tag{51}
-$$
+```latex
+e_2 = qdot - alpha_f
+```
 
 ### Level-2 力矩律
 
 **旧律（`ppc01_baseline.py` / `ppc02_mu_unclip.py` / `ppc03_reinit.py` / `ppc04_noclip.py` / `ppc_onelayer_abl.py`）：**
 
-$$
-s_2=\tanh(\mu_2/\delta),\quad \delta=0.5,\quad
-K_b=2+0.02\min(\|\dot{q}\|,100)^2,\quad \gamma_2=3.0,\ \varepsilon=0.15 \tag{52}
-$$
+```latex
+s_2 = tanh(mu_2 / delta),  delta = 0.5
+K_b = 2 + 0.02 min(||qdot||, 100)^2
+gamma_2 = 3.0,  epsilon = 0.15
+```
 
-$$
-\tau_\sigma=h+M(\dot{\alpha}_f-\gamma_2\mu_2-\varepsilon s_2)-K_b\,s_2 \tag{53}
-$$
+```latex
+tau_sigma = h + M (alphadot_f - gamma_2 mu_2 - epsilon s_2) - K_b s_2
+```
 
 **新律（`ppc05_fixed.py`，DAMP_IN_M=True，默认）：**
 
-$$
-k_r=0.5+0.005\min(\|\dot{q}\|,100)^2,\quad \gamma_2=8.0,\ \varepsilon=0.15 \tag{54}
-$$
+```latex
+k_r = 0.5 + 0.005 min(||qdot||, 100)^2
+gamma_2 = 8.0,  epsilon = 0.15
+```
 
-$$
-\tau_\sigma=h+M(\dot{\alpha}_f-\gamma_2\mu_2-\varepsilon s_2-k_r s_2) \tag{55}
-$$
+```latex
+tau_sigma = h + M (alphadot_f - gamma_2 mu_2 - epsilon s_2 - k_r s_2)
+```
 
 **A/B 对照律（`ppc05_fixed.py`，DAMP_IN_M=False）：**
 
-$$
-K_b=2+0.02\min(\|\dot{q}\|,100)^2,\ \gamma_2=8.0;\quad
-\tau_\sigma=h+M(\dot{\alpha}_f-\gamma_2\mu_2-\varepsilon s_2)-K_b\,s_2 \tag{56}
-$$
+```latex
+K_b = 2 + 0.02 min(||qdot||, 100)^2,  gamma_2 = 8.0
+tau_sigma = h + M (alphadot_f - gamma_2 mu_2 - epsilon s_2) - K_b s_2
+```
 
 ### 闭环误差动力学
 
 位置层（两层版公共）：
 
-$$
-\dot{e}_1=e_2+\xi-\gamma_1\mu_1,\qquad
-\dot{\mu}_1=T'(\varphi_1)\Big(\frac{\dot{e}_1}{\rho_1}-\varphi_1\sigma_1\Big) \tag{57}
-$$
+```latex
+edot_1 = e_2 + xi - gamma_1 mu_1
+mudot_1 = T'(phi_1) (edot_1 / rho_1 - phi_1 sigma_1)
+```
 
 速度层：
 
-$$
-\text{旧律:}\quad \dot{e}_{2,i}=-\gamma_2\mu_{2,i}-(\varepsilon+K_b/M_{ii})\tanh\frac{\mu_{2,i}}{\delta}+\frac{d_i}{M_{ii}} \tag{58}
-$$
+```latex
+旧律: edot_{2,i} = -gamma_2 mu_{2,i}
+                 - (epsilon + K_b / M_{ii}) tanh(mu_{2,i} / delta)
+                 + d_i / M_{ii}
+```
 
-$$
-\text{新律:}\quad \dot{e}_{2,i}=-\gamma_2\mu_{2,i}-(\varepsilon+k_r)\tanh\frac{\mu_{2,i}}{\delta}+\frac{d_i}{M_{ii}} \tag{59}
-$$
+```latex
+新律: edot_{2,i} = -gamma_2 mu_{2,i}
+                 - (epsilon + k_r) tanh(mu_{2,i} / delta)
+                 + d_i / M_{ii}
+```
 
-线性化极点（$\mu_2\to 0$，$T'\to k_T$，$\tfrac{d}{d\mu}\tanh(\mu/\delta)|_0=2/\delta$）：
+线性化极点（`mu_2 -> 0`，`T' -> k_T`，`d/dmu tanh(mu/delta)|_0 = 2/delta`）：
 
-$$
-\lambda_i^{old}=\underbrace{(\gamma_2+2\varepsilon)\frac{k_T}{\rho_{2,\infty}}}_{\text{经 }M,\ \text{通道一致}}
-+\underbrace{\frac{2K_{b,0}\,k_T}{\rho_{2,\infty}M_{ii}}}_{\text{裸 }K_b,\ \div M_{ii}}
-=\ 73.3+\frac{88.9}{M_{ii}} \tag{60}
-$$
+```latex
+lambda_i^old = (gamma_2 + 2 epsilon) k_T / rho_{2,inf}    [经 M，通道一致]
+             + 2 K_{b,0} k_T / (rho_{2,inf} M_{ii})      [裸 K_b，除 M_{ii}]
+             = 73.3 + 88.9 / M_{ii}
+```
 
-$$
-\lambda^{new}=(\gamma_2+2(\varepsilon+k_{r,0}))\frac{k_T}{\rho_{2,\infty}}
-=\begin{cases}206.7\ \mathrm{rad/s}, & \gamma_2=8\\ 95.6\ \mathrm{rad/s}, & \gamma_2=3\end{cases} \tag{61}
-$$
+```latex
+lambda^new = (gamma_2 + 2 (epsilon + k_{r,0})) k_T / rho_{2,inf}
+           = 206.7 rad/s   (gamma_2 = 8)
+           = 95.6  rad/s   (gamma_2 = 3)
+```
 
-**一层版（`ppc_onelayer_abl.py`），其中 $\gamma_1\mu_1\equiv 0$：**
+**一层版（`ppc_onelayer_abl.py`），其中 `gamma_1 mu_1 = 0`：**
 
-$$
-\dot{e}_1^{diag}=e_2+\xi\ \xrightarrow{t\to\infty}\ e_{2,ss}\neq 0
-\quad\Longrightarrow\quad
-e_1^{diag}(t)=e_{2,ss}\,t+O(1) \tag{62}
-$$
+```latex
+edot_1^{diag} = e_2 + xi  ->  e_{2,ss} != 0  (t -> inf)
+=> e_1^{diag}(t) = e_{2,ss} t + O(1)
+```
 
-### 极点审计（$\Delta t=2$ ms）
+### 极点审计（`dt = 2 ms`）
 
-| 通道 | $M_{ii}$ | $\lambda^{old}$ | $\lambda^{old}\Delta t$ | 判定 |
+| 通道 | `M_ii` | `lambda_old` | `lambda_old * dt` | 判定 |
 |---|---|---|---|---|
 | base_x/y | 169.98 | 73.9 | 0.15 | ok |
 | yaw | 8.73 | 83.5 | 0.17 | ok |
@@ -488,52 +503,51 @@ $$
 | j6 | 0.048 | 1917.3 | **3.83** | **失稳** |
 | j7 | 0.004 | 25116 | **50.2** | **失稳** |
 
-失稳惯量阈值（$\lambda\Delta t=1$）：
+失稳惯量阈值（`lambda dt = 1`）：
 
-$$
-M^{*}=\frac{2K_{b,0}k_T/\rho_{2,\infty}}{1/\Delta t-(\gamma_2+2\varepsilon)k_T/\rho_{2,\infty}}=0.208\ \mathrm{kg\,m^2} \tag{63}
-$$
+```latex
+M* = (2 K_{b,0} k_T / rho_{2,inf})
+     / (1/dt - (gamma_2 + 2 epsilon) k_T / rho_{2,inf})
+   = 0.208 kg m^2
+```
 
 ### 域外分流
 
-**`ppc01_baseline.py` / `ppc02_mu_unclip.py`（v0/v1）：** 无域处理，由「各版本实际变换」中的饱和静默吸收越界。
+**`ppc01_baseline.py` / `ppc02_mu_unclip.py`（v0/v1）：** 无域处理，由变换饱和静默吸收越界。
 
 **`ppc03_reinit.py`（v2，重 init 常开）：**
 
-$$
-\mathcal{G}_1:\ q_d^{+}=q,\ e_1^{+}=0;\qquad
-\mathcal{G}_2:\ \alpha_f^{+}=\dot{q},\ e_2^{+}=0 \tag{64}
-$$
+```latex
+G_1 : q_d^+ = q,  e_1^+ = 0
+G_2 : alpha_f^+ = qdot,  e_2^+ = 0
+```
 
 **`ppc04_noclip.py` / `ppc05_fixed.py`（v3/v4，开关）：**
 
-$$
-\text{REINIT}=1:\ \text{同 (64)，附事件流 } \{(t,\text{ch},\max|\varphi|)\} \tag{65}
-$$
-
-$$
-\text{REINIT}=0:\ \mu\notin\mathbb{R}\ \Rightarrow\ \tau_{cmd}=0;\quad
-\dot{q}_d\neq 0\ \Rightarrow\ \dot{e}_1>0\ \text{恒立}\ \Rightarrow\ \text{永久失控} \tag{66}
-$$
+```latex
+REINIT = 1 : 同 (64)，附事件流 {(t, ch, max|phi|)}
+REINIT = 0 : mu 非实数 => tau_cmd = 0
+             qdot_d != 0 => edot_1 > 0 恒立 => 永久失控
+```
 
 **`ppc_onelayer_abl.py`（1L，仅 L2）：**
 
-$$
-\mathcal{G}_2:\ \alpha_f^{+}=\dot{q},\ e_2^{+}=0\quad(\text{无 }e_1/\mathcal{G}_1\text{ 概念}) \tag{67}
-$$
+```latex
+G_2 : alpha_f^+ = qdot,  e_2^+ = 0   (无 e_1 / G_1 概念)
+```
 
 ### PPC 差异表
 
 | 特性 | v0 | v1 | v2 | v3 | v4 | 1L |
 |---|---|---|---|---|---|---|
-| 变换算子 | clip×2 | clip×1 | 纯 | 纯 | 纯 | 纯 |
+| 变换算子 | clip x2 | clip x1 | 纯 | 纯 | 纯 | 纯 |
 | 域处理 | 静默 | 静默 | REINIT 固定 | REINIT 开关 | REINIT 开关 | REINIT（L2） |
-| 位置环 $e_1/\mu_1$ | ✓ | ✓ | ✓ | ✓ | ✓ | ✗（诊断） |
-| γ₁ | 0.4 | 0.4 | 0.4 | 0.4 | **0.25** | — |
-| γ₂ | 3.0 | 3.0 | 3.0 | 3.0 | **8.0** | 3.0 |
-| 阻尼结构 | $K_b/M_{ii}$ | 同 | 同 | 同 | $k_r$ 进 $M$ | $K_b/M_{ii}$ |
-| ρ₁∞ 臂 | 0.12 | 0.12 | 0.12 | 0.025 | **0.04** | 0.12（诊断） |
-| ρ₂∞ 臂 | 0.25 | 0.25 | 0.25 | 0.10 | 0.10 | 0.25 |
+| 位置环 `e_1 / mu_1` | ✓ | ✓ | ✓ | ✓ | ✓ | ✗（诊断） |
+| `gamma_1` | 0.4 | 0.4 | 0.4 | 0.4 | **0.25** | — |
+| `gamma_2` | 3.0 | 3.0 | 3.0 | 3.0 | **8.0** | 3.0 |
+| 阻尼结构 | `K_b / M_ii` | 同 | 同 | 同 | `k_r` 进 `M` | `K_b / M_ii` |
+| `rho_{1,inf}` 臂 | 0.12 | 0.12 | 0.12 | 0.025 | **0.04** | 0.12（诊断） |
+| `rho_{2,inf}` 臂 | 0.25 | 0.25 | 0.25 | 0.10 | 0.10 | 0.25 |
 | 层数 | 2 | 2 | 2 | 2 | 2 | **1** |
 
 ---
@@ -542,70 +556,73 @@ $$
 
 ### 臂力矩接口（全版本一致）
 
-$$
-\tau_{[4:11]}=\tau_{\sigma,[3:10]} \tag{68}
-$$
+```latex
+tau[4:11] = tau_sigma[3:10]
+```
 
 ### 底盘力矩接口
 
 **`ppc01_baseline.py` / `ppc02_mu_unclip.py` / `ppc03_reinit.py` / `ppc_onelayer_abl.py`（clip ON）：**
 
-$$
-\tau_w=\mathrm{clip}\big(T_f R_{w2b}\,\tau_{\sigma,[0:3]},\pm 50\big) \tag{69}
-$$
+```latex
+tau_w = clip( T_f R_{w2b} tau_sigma[0:3], +-50 )
+```
 
 **`ppc04_noclip.py` / `ppc05_fixed.py`（无 clip，仅记录）：**
 
-$$
-\tau_w=T_f R_{w2b}\,\tau_{\sigma,[0:3]} \tag{70}
-$$
+```latex
+tau_w = T_f R_{w2b} tau_sigma[0:3]
+```
 
 ### 输出映射
 
 **clip ON 组：**
 
-$$
-\tau_{cmd}=\mathrm{clip}(\tau,\tau_{lo},\tau_{hi}) \tag{71}
-$$
+```latex
+tau_cmd = clip(tau, tau_lo, tau_hi)
+```
 
 **无 clip 组：**
 
-$$
-\tau_{cmd}=\tau \tag{72}
-$$
+```latex
+tau_cmd = tau
+```
 
 饱和诊断（仅测量）：
 
-$$
-n_i=\sum_t \mathbf{1}\{\tau_i>\bar{\tau}_i+10^{-9}\vee\tau_i<-\bar{\tau}_i-10^{-9}\},\quad r_i=\frac{n_i}{N_{steps}} \tag{73}
-$$
+```latex
+n_i = sum_t 1{ tau_i > tau_bar_i + 1e-9  or  tau_i < -tau_bar_i - 1e-9 }
+r_i = n_i / N_steps
+```
 
-$$
-\bar{\tau}=[50,50,50,50,87,87,100,87,12,12,12] \tag{74}
-$$
+```latex
+tau_bar = [50, 50, 50, 50, 87, 87, 100, 87, 12, 12, 12]
+```
 
 ### 镇定段
 
 **均匀 PD（v0–v3，1L）：**
 
-$$
-\tau_{a,i}=\mathrm{clip}(h_i+50\,e_{hold,i}-10\,\dot{q}_i,\tau_{lo},\tau_{hi}),\quad \lambda\Delta t=\frac{10\Delta t}{M_{ii}} \tag{75}
-$$
+```latex
+tau_{a,i} = clip( h_i + 50 e_hold,i - 10 qdot_i, tau_lo, tau_hi )
+lambda dt = 10 dt / M_ii
+```
 
-> j7（$M_{77}=0.004$）给出 $\lambda\Delta t = 5 > 2$；$z=1-5=-4$ 每步反号 → 0.05 s 处 NaN → P2 违例 → $t=0$ 事件级联。
+> j7（`M_77 = 0.004`）给出 `lambda dt = 5 > 2`；`z = 1 - 5 = -4` 每步反号 → 0.05 s 处 NaN → P2 违例 → `t = 0` 事件级联。
 
 **M 加权（v4）：**
 
-$$
-\tau_{a,i}=h_i+M_{ii}(25\,e_{hold,i}-10\,\dot{q}_i),\quad \lambda\Delta t=0.02\ (\text{与 }M_{ii}\text{ 无关}) \tag{76}
-$$
+```latex
+tau_{a,i} = h_i + M_ii (25 e_hold,i - 10 qdot_i)
+lambda dt = 0.02   (与 M_ii 无关)
+```
 
 ### 力矩接口差异表
 
 | 特性 | v0 | v1 | v2 | v3 | v4 | 1L |
 |---|---|---|---|---|---|---|
 | 臂力矩映射 | 直通 | 直通 | 直通 | 直通 | 直通 | 直通 |
-| 底盘力分配 | $T_f R_{w2b}$ | 同 | 同 | 同 | 同 | 同 |
+| 底盘力分配 | `T_f R_{w2b}` | 同 | 同 | 同 | 同 | 同 |
 | 轮矩 clip | ±50 | ±50 | ±50 | **无** | **无** | ±50 |
 | 输出 clip | ✓ | ✓ | ✓ | ✗ | ✗ | ✓ |
 | 超限计数 | ✗ | ✗ | ✗ | ✓ | ✓ | ✗ |
@@ -614,32 +631,36 @@ $$
 
 ### 数据流总图
 
-$$
-\begin{aligned}
-p_d,Q^* &\xrightarrow{\text{轨迹生成}} \text{DLS} \xrightarrow{\text{零空间}} [\text{限位回避：v0 无}] \to \text{Slew} \to \dot{q}_{des} \\
-&\xrightarrow{\text{PPC}} \text{积分器}\ q_d \to e_1 \to \mu_1 \to \alpha = \dot{q}_{des} - \gamma_1\mu_1\ [\text{1L: }\alpha=\dot{q}_{des}\pm K_I\!\int e_2] \\
-&\quad \to \text{滤波}\ \lambda_f=20 \to \alpha_f \to e_2 \to \mu_2 \\
-&\quad \to \tau_\sigma = h+M(\dot{\alpha}_f-\gamma_2\mu_2-\varepsilon s_2)-\{K_b s_2\mid \text{v4: }-M k_r s_2\} \\
-&\xrightarrow{\text{力矩接口}} \text{力分配} \to \tau \to [\text{输出 clip：v3/v4 无}] \\
-&\quad \to [\text{域外：v0/v1 静默}\mid \text{v2+ REINIT/NaN 开关}]
-\end{aligned}
-$$
+```latex
+p_d, Q* --[轨迹生成]--> DLS --[零空间]--> [限位回避: v0 无] --> Slew --> qdot_des
+       --[PPC]--> 积分器 q_d --> e_1 --> mu_1
+              --> alpha = qdot_des - gamma_1 mu_1
+                  [1L: alpha = qdot_des +- K_I int(e_2)]
+              --> 滤波 lambda_f = 20 --> alpha_f --> e_2 --> mu_2
+              --> tau_sigma = h + M (alphadot_f - gamma_2 mu_2 - epsilon s_2)
+                              - { K_b s_2 | v4: M k_r s_2 }
+       --[力矩接口]--> 力分配 --> tau --> [输出 clip: v3/v4 无]
+              --> [域外: v0/v1 静默 | v2+ REINIT/NaN 开关]
+```
 
 ---
 
 ## 数值实现
 
-**公共。** 显式 Euler，$\alpha_f$ 先更新后积分；NaN 守卫在 $q,\dot{q},\tau$ 非有限时强制 $\tau_{cmd}=0$；前提检查 (P1)–(P4)：
+**公共。** 显式 Euler，`alpha_f` 先更新后积分；NaN 守卫在 `q, qdot, tau` 非有限时强制 `tau_cmd = 0`；前提检查 (P1)–(P4)：
 
-$$
-\alpha_f^{+}=\alpha_f+\Delta t\,\dot{\alpha}_f \tag{77}
-$$
+```latex
+alpha_f^+ = alpha_f + dt alphadot_f
+```
 
-$$
-(P1)\ e_1(0)=0;\quad (P2)\ |\dot{q}_i(0)|<0.9\rho_{2,i}(0);\quad (P3)\ \|\dot{q}_{des}\|\ \text{有界};\quad (P4)\ M\ \text{对角占优} \tag{78}
-$$
+```latex
+(P1) e_1(0) = 0
+(P2) |qdot_i(0)| < 0.9 rho_{2,i}(0)
+(P3) ||qdot_des|| 有界
+(P4) M 对角占优
+```
 
-P3 由 (17) 与 (20) 保证。P4 之外的非对角耦合并入 (11)。
+P3 由分通道饱和与 Slew 保证。P4 之外的非对角耦合并入集中扰动 `d`。
 
 ---
 
@@ -647,18 +668,18 @@ P3 由 (17) 与 (20) 保证。P4 之外的非对角耦合并入 (11)。
 
 公共指标：
 
-$$
-\mathrm{over}_i=\max_t\big(|e_{1,i}(t)|-0.9\rho_{1,i}(t)\big),\quad
-|e_1|_{ss,i}=\operatorname*{mean}_{T_{end}-5\le t\le T_{end}}|e_{1,i}(t)| \tag{79}
-$$
+```latex
+over_i = max_t ( |e_{1,i}(t)| - 0.9 rho_{1,i}(t) )
+|e_1|_{ss,i} = mean_{T_end - 5 <= t <= T_end} |e_{1,i}(t)|
+```
 
 | 版本 | 新增诊断 |
 |---|---|
-| v1 | 首次引入 (79) |
-| v2 | 事件流 $\{(t,\text{ch},\max\|\varphi\|)\}$；P1/P2 打印 |
-| v3 | $n_i$、$r_i$；NaN 事件流；REINIT vs 裸 PPC 对照 |
-| v4 | 通过 `audit_closed_loop` 逐通道在线计算 (60)–(63)、(65)–(66)；逐通道 L2 事件计数与 $\max_t\varphi$ |
-| 1L | 漂移斜率 $\hat{s}_i$（判据 $\hat{s}_i\approx e_{2,ss,i}$）；$\overline{\|e_2\|}(t)$；INJECT 恒等式验证 |
+| v1 | 首次引入上述指标 |
+| v2 | 事件流 `{(t, ch, max||phi||)}`；P1/P2 打印 |
+| v3 | `n_i`、`r_i`；NaN 事件流；REINIT vs 裸 PPC 对照 |
+| v4 | 通过 `audit_closed_loop` 逐通道在线计算旧/新极点、失稳阈值、gamma_2 窗口、位置环 PM、屏障平衡点；逐通道 L2 事件计数与 `max_t phi` |
+| 1L | 漂移斜率 `s_hat_i`（判据 `s_hat_i ~ e_{2,ss,i}`）；`mean(|e_2|)(t)`；INJECT 恒等式验证 |
 
 ---
 
@@ -666,22 +687,22 @@ $$
 
 | 公式 | 代码位置（除注明外六版同名） |
 |---|---|
-| (2)–(3) | `_base_output` / 常量 `WHEEL_R, HALF_AXLE, HALF_TRACK` |
-| (4)–(8) | `world_jacobian` / `orientation_error_world` |
-| (9)–(11) | `compute_ctrl`（`h` 与集中扰动） |
-| (12)–(14) | `T_FORCE` 常量 / `_base_output` |
-| (15)–(17) | `generate_trajectory` / IK 层 `v_cmd, w_cmd` |
-| (18)–(19) | `manipulability` / `adaptive_damping2` / DLS |
-| (20) | `SlewLimiter.__call__` |
-| (21)–(23) | `pinv(rcond=1e-6)` / `manipulability_gradient` / 门控 |
-| (25)–(27) | `null_space_limit_repulsion` / `apply_limit_braking`（v0 无） |
-| (33)–(38) | `PPFVector.f` |
-| (39)–(46) | `PPFVector.transform`（逐版不同） |
-| (50)–(51) | `compute_ctrl` 滤波段 |
-| (52)–(56) | `alpha = ...`、`tau_sigma = ...` |
-| (64)–(67) | `domain_ok` 分支 / `compute_ctrl` 尾段 |
-| (68)–(76) | `_base_output` / `settle_step` |
-| (60)–(63) | `audit_closed_loop`（仅 v4） |
+| 差速底盘 | `_base_output` / 常量 `WHEEL_R, HALF_AXLE, HALF_TRACK` |
+| 末端雅可比 / 姿态误差 | `world_jacobian` / `orientation_error_world` |
+| 动力学 / 集中扰动 | `compute_ctrl`（`h` 与扰动归集） |
+| 力分配 | `T_FORCE` 常量 / `_base_output` |
+| 轨迹生成 / IK 层 | `generate_trajectory` / `v_cmd, w_cmd` |
+| DLS / 自适应阻尼 | `manipulability` / `adaptive_damping2` |
+| Slew | `SlewLimiter.__call__` |
+| 零空间投影 / 梯度 / 门控 | `pinv(rcond=1e-6)` / `manipulability_gradient` |
+| 限位排斥 / 刹车 | `null_space_limit_repulsion` / `apply_limit_braking`（v0 无） |
+| 漏斗 | `PPFVector.f` |
+| 变换（逐版不同） | `PPFVector.transform` |
+| 命令滤波 | `compute_ctrl` 滤波段 |
+| Level-1 / Level-2 | `alpha = ...`、`tau_sigma = ...` |
+| 域外分流 | `domain_ok` 分支 / `compute_ctrl` 尾段 |
+| 力矩接口 / 镇定段 | `_base_output` / `settle_step` |
+| 审计（仅 v4） | `audit_closed_loop` |
 
 ---
 
@@ -689,10 +710,11 @@ $$
 
 仅存在于 `ppc01_baseline.py` / `ppc02_mu_unclip.py` / `ppc03_reinit.py`。通过 `USE_PPC=False` 启用。作为「无预设性能」的 A/B 参照。
 
-$$
-\tau_{virt}=(C\dot{q}+G-\tau_{passive})+M(\dot{\alpha}+k_d(\dot{q}_{des}-\dot{q})),\quad
-\dot{\alpha}=-\lambda_f(\alpha-\dot{q}_{des}),\quad k_d=5 \tag{A.1}
-$$
+```latex
+tau_virt = (C qdot + G - tau_passive)
+         + M ( alphadot + k_d (qdot_des - qdot) )
+alphadot = -lambda_f (alpha - qdot_des),  k_d = 5
+```
 
 输出同样经 ctrlrange clip。在 `ppc04_noclip.py`、`ppc05_fixed.py`、`ppc_onelayer_abl.py` 中已移除。
 
@@ -702,12 +724,12 @@ $$
 
 | # | 对象 | v0 | v1 | v2 | v3 | v4 | 1L |
 |---|---|---|---|---|---|---|---|
-| 1 | 变换算子 | clip×2 | clip×1 | 纯 | 纯 | 纯 | 纯 |
+| 1 | 变换算子 | clip x2 | clip x1 | 纯 | 纯 | 纯 | 纯 |
 | 2 | 域处理 | 静默 | 静默 | 重 init 固定 | 重 init 开关 | 重 init 开关 | 重 init（L2） |
-| 3 | 阻尼结构 | $K_b/M_{ii}$ | 同 | 同 | 同 | $k_r$ 进 $M$ | $K_b/M_{ii}$ |
+| 3 | 阻尼结构 | `K_b / M_ii` | 同 | 同 | 同 | `k_r` 进 `M` | `K_b / M_ii` |
 | 4 | 漏斗宽度 | 宽 | 宽 | 宽 | 窄 | 窄 + 重平衡 | 宽 |
-| 5 | γ₂ | 3 | 3 | 3 | 3 | **8** | 3 |
-| 6 | Settle 极点 | $k/M_{ii}$ | 同 | 同 | 同 | 加速度级 | $k/M_{ii}$ |
+| 5 | `gamma_2` | 3 | 3 | 3 | 3 | **8** | 3 |
+| 6 | Settle 极点 | `k / M_ii` | 同 | 同 | 同 | 加速度级 | `k / M_ii` |
 | 7 | 层数 | 2 | 2 | 2 | 2 | 2 | **1** |
 
-**叙事主线。** v0/v1 违反 $T'\ge k_T$ → 屏障增益被钳死 → v2 恢复前提，但 (60) 遗留 $88.9/M_{ii}$ 通道失配 → v3 收窄 $\rho_2$，使灵敏度 $\lambda\Delta t\propto 1/(\rho_2 M_{ii})$ 加倍，暴露出 $M^{*}=0.208$ 覆盖 $\{j1,j3,j5,j6,j7\}$ → v4 以 (61) 统一极点，由平衡窗口设定 $\gamma_2=8$ → 1L 以漂移定理 (62) 收尾：位置层不可去除，而 INJECT 恒等式表明「修好的一层律」其实就是两层律的变装。
+**叙事主线。** v0/v1 违反 `T' >= k_T` → 屏障增益被钳死 → v2 恢复前提，但旧律遗留 `88.9 / M_ii` 通道失配 → v3 收窄 `rho_2`，使灵敏度 `lambda dt ~ 1 / (rho_2 M_ii)` 加倍，暴露出 `M* = 0.208` 覆盖 `{j1, j3, j5, j6, j7}` → v4 统一极点，由平衡窗口设定 `gamma_2 = 8` → 1L 以漂移定理收尾：位置层不可去除，而 INJECT 恒等式表明「修好的一层律」其实就是两层律的变装。
