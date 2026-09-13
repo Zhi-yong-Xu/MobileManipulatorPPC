@@ -1,0 +1,562 @@
+<mujoco model="summit_xls">
+  <compiler angle="radian" meshdir="./meshes/"/>
+
+  <statistic meansize="0.767828" extent="17.3945" center="-1.30273 -0.281443 0.819464"/>
+
+  <asset>
+    <texture type="2d" name="texplane" builtin="checker" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3" width="512" height="512"/>
+    <material name="MatGnd" texture="texplane" texuniform="true" reflectance="0.5"/>
+
+    <material name="base_link_mat" specular="0" rgba="0.502 0.502 0.502 1"/>
+    <material name="front_left_wheel_link_mat" specular="0" rgba="0.2 0.2 0.2 1"/>
+    <material name="front_right_wheel_link_mat" specular="0" rgba="0.2 0.2 0.2 1"/>
+    <material name="rear_left_wheel_link_mat" specular="0" rgba="0.2 0.2 0.2 1"/>
+    <material name="rear_right_wheel_link_mat" specular="0" rgba="0.2 0.2 0.2 1"/>
+    <material name="top_chassis_link_mat" specular="0" rgba="0.502 0.502 0.502 1"/>
+    <material name="user_rail_link_mat" specular="0" rgba="0.502 0.502 0.502 1"/>
+    <material name="front_bumper_link_mat" specular="0" rgba="0.502 0.502 0.502 1"/>
+    <material name="rear_bumper_link_mat" specular="0" rgba="0.502 0.502 0.502 1"/>
+    <material name="top_plate_link_mat" specular="0" rgba="0.502 0.502 0.502 1"/>
+    <material name="front_laser_base_link_mat" specular="0" rgba="0.502 0.502 0.502 1"/>
+    <material name="ur3_base_link_mat_1" specular="0" rgba="0.2706 0.2706 0.2706 1"/>
+    <material name="ur3_base_link_mat_2" specular="0" rgba="0 0 0 1"/>
+    <material name="shoulder_link_mat_1" specular="0" rgba="0.1137 0.1137 0.1137 1"/>
+    <material name="shoulder_link_mat_2" specular="0" rgba="0.2 0.2784 0.3294 1"/>
+    <material name="shoulder_link_mat_3" specular="0" rgba="0.0392 0.0392 0.0392 1"/>
+    <material name="shoulder_link_mat_4" specular="0" rgba="0.1137 0.1137 0.1137 1"/>
+    <material name="shoulder_link_mat_5" specular="0" rgba="0.0392 0.0392 0.0392 1"/>
+    <material name="shoulder_link_mat_6" specular="0" rgba="0.1137 0.1137 0.1137 1"/>
+    <material name="upper_arm_link_mat_1" specular="0" rgba="0.251 0.349 0.4078 1"/>
+    <material name="upper_arm_link_mat_2" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="upper_arm_link_mat_3" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="upper_arm_link_mat_4" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="upper_arm_link_mat_5" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="upper_arm_link_mat_6" specular="0" rgba="0.3373 0.3373 0.3373 1"/>
+    <material name="upper_arm_link_mat_7" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="upper_arm_link_mat_8" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="upper_arm_link_mat_9" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="upper_arm_link_mat_10" specular="0" rgba="0.251 0.349 0.4078 1"/>
+    <material name="upper_arm_link_mat_11" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="forearm_link_mat_1" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="forearm_link_mat_2" specular="0" rgba="0.3373 0.3373 0.3373 1"/>
+    <material name="forearm_link_mat_3" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="forearm_link_mat_4" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="forearm_link_mat_5" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="forearm_link_mat_6" specular="0" rgba="0.251 0.349 0.4078 1"/>
+    <material name="wrist_1_link_mat_1" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="wrist_1_link_mat_2" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="wrist_1_link_mat_3" specular="0" rgba="0.251 0.349 0.4078 1"/>
+    <material name="wrist_2_link_mat_1" specular="0" rgba="0.251 0.349 0.4078 1"/>
+    <material name="wrist_2_link_mat_2" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="wrist_2_link_mat_3" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+    <material name="wrist_3_link_mat_1" specular="0" rgba="0.3373 0.3373 0.3373 1"/>
+    <material name="wrist_3_link_mat_2" specular="0" rgba="0.1412 0.1412 0.1412 1"/>
+
+    <!-- 添加 ARX L5 的材质 -->
+    <material name="black_mat" rgba="0.1 0.1 0.1 1"/>
+
+    <!-- 添加 ARX L5 的网格文件 (注意：你需要确保这些 .obj 文件在正确的路径下，或者将 file 路径修改为实际位置) -->
+    <mesh name="gripper_base" file="gripper_base.obj"/>
+    <mesh name="gripper1" file="gripper1.obj"/>
+    <mesh name="gripper2" file="gripper2.obj"/>
+
+    <mesh name="summit_xls_chassis" content_type="model/stl" file="bases/xls/summit_xls_chassis.stl"/>
+    <mesh name="summit_xls_chapas_inox_tapas" content_type="model/stl" file="bases/xls/summit_xls_chapas_inox_tapas.stl"/>
+    <mesh name="robotnik_logo_chasis" content_type="model/stl" file="bases/xls/robotnik_logo_chasis.stl"/>
+    <mesh name="summit_xls_omni_wheel_1" content_type="model/stl" file="wheels/omni_wheel_1.stl"/>
+    <mesh name="summit_xls_omni_wheel_2" content_type="model/stl" file="wheels/omni_wheel_2.stl"/>
+    <mesh name="structure_hokuyo" content_type="model/stl" file="structures/structure_hokuyo.stl"/>
+    <mesh name="ur3_visual_base_material_001" content_type="model/obj" file="ur3/visual/base_material_001.obj"/>
+    <mesh name="ur3_visual_base_material_002" content_type="model/obj" file="ur3/visual/base_material_002.obj"/>
+    <mesh name="ur3_collision_base" content_type="model/stl" file="ur3/collision/base.stl"/>
+    <mesh name="ur3_visual_shoulder_verbindung_001" content_type="model/obj" file="ur3/visual/shoulder_verbindung_001.obj"/>
+    <mesh name="ur3_visual_shoulder_blau_001" content_type="model/obj" file="ur3/visual/shoulder_blau_001.obj"/>
+    <mesh name="ur3_visual_shoulder_grey_001" content_type="model/obj" file="ur3/visual/shoulder_grey_001.obj"/>
+    <mesh name="ur3_visual_shoulder_verbindung_001_2" content_type="model/obj" file="ur3/visual/shoulder_verbindung_001_2.obj"/>
+    <mesh name="ur3_visual_shoulder_grey_001_2" content_type="model/obj" file="ur3/visual/shoulder_grey_001_2.obj"/>
+    <mesh name="ur3_visual_shoulder_verbindung_001_3" content_type="model/obj" file="ur3/visual/shoulder_verbindung_001_3.obj"/>
+    <mesh name="ur3_collision_shoulder" content_type="model/stl" file="ur3/collision/shoulder.stl"/>
+    <mesh name="ur3_visual_upperarm_blau" content_type="model/obj" file="ur3/visual/upperarm_blau.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung" content_type="model/obj" file="ur3/visual/upperarm_verbindung.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung_2" content_type="model/obj" file="ur3/visual/upperarm_verbindung_2.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung_3" content_type="model/obj" file="ur3/visual/upperarm_verbindung_3.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung_4" content_type="model/obj" file="ur3/visual/upperarm_verbindung_4.obj"/>
+    <mesh name="ur3_visual_upperarm_rohr" content_type="model/obj" file="ur3/visual/upperarm_rohr.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung_5" content_type="model/obj" file="ur3/visual/upperarm_verbindung_5.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung_6" content_type="model/obj" file="ur3/visual/upperarm_verbindung_6.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung_7" content_type="model/obj" file="ur3/visual/upperarm_verbindung_7.obj"/>
+    <mesh name="ur3_visual_upperarm_blau_2" content_type="model/obj" file="ur3/visual/upperarm_blau_2.obj"/>
+    <mesh name="ur3_visual_upperarm_verbindung_8" content_type="model/obj" file="ur3/visual/upperarm_verbindung_8.obj"/>
+    <mesh name="ur3_collision_upperarm" content_type="model/stl" file="ur3/collision/upperarm.stl"/>
+    <mesh name="ur3_visual_forearm_verbindung" content_type="model/obj" file="ur3/visual/forearm_verbindung.obj"/>
+    <mesh name="ur3_visual_forearm_rohr" content_type="model/obj" file="ur3/visual/forearm_rohr.obj"/>
+    <mesh name="ur3_visual_forearm_verbindung_2" content_type="model/obj" file="ur3/visual/forearm_verbindung_2.obj"/>
+    <mesh name="ur3_visual_forearm_verbindung_3" content_type="model/obj" file="ur3/visual/forearm_verbindung_3.obj"/>
+    <mesh name="ur3_visual_forearm_verbindung_4" content_type="model/obj" file="ur3/visual/forearm_verbindung_4.obj"/>
+    <mesh name="ur3_visual_forearm_blau" content_type="model/obj" file="ur3/visual/forearm_blau.obj"/>
+    <mesh name="ur3_collision_forearm" content_type="model/stl" file="ur3/collision/forearm.stl"/>
+    <mesh name="ur3_visual_wrist1_verbindung" content_type="model/obj" file="ur3/visual/wrist1_verbindung.obj"/>
+    <mesh name="ur3_visual_wrist1_verbindung_2" content_type="model/obj" file="ur3/visual/wrist1_verbindung_2.obj"/>
+    <mesh name="ur3_visual_wrist1_blau" content_type="model/obj" file="ur3/visual/wrist1_blau.obj"/>
+    <mesh name="ur3_collision_wrist1" content_type="model/stl" file="ur3/collision/wrist1.stl"/>
+    <mesh name="ur3_visual_wrist2_blau" content_type="model/obj" file="ur3/visual/wrist2_blau.obj"/>
+    <mesh name="ur3_visual_wrist2_verbindung" content_type="model/obj" file="ur3/visual/wrist2_verbindung.obj"/>
+    <mesh name="ur3_visual_wrist2_verbindung_2" content_type="model/obj" file="ur3/visual/wrist2_verbindung_2.obj"/>
+    <mesh name="ur3_collision_wrist2" content_type="model/stl" file="ur3/collision/wrist2.stl"/>
+    <mesh name="ur3_visual_wrist3_rohr" content_type="model/obj" file="ur3/visual/wrist3_rohr.obj"/>
+    <mesh name="ur3_visual_wrist3_verbindung" content_type="model/obj" file="ur3/visual/wrist3_verbindung.obj"/>
+    <mesh name="ur3_collision_wrist3" content_type="model/stl" file="ur3/collision/wrist3.stl"/>
+    <mesh name="accessories_d435_material0" content_type="model/obj" file="accessories/d435_material0.obj"/>
+    <mesh name="accessories_d435_material0_2" content_type="model/obj" file="accessories/d435_material0_2.obj"/>
+    <mesh name="accessories_d435_material0_3" content_type="model/obj" file="accessories/d435_material0_3.obj"/>
+    <mesh name="accessories_d435_material0_4" content_type="model/obj" file="accessories/d435_material0_4.obj"/>
+    <mesh name="accessories_d435_material0_5" content_type="model/obj" file="accessories/d435_material0_5.obj"/>
+    <mesh name="accessories_d435_material0_6" content_type="model/obj" file="accessories/d435_material0_6.obj"/>
+    <mesh name="accessories_d435_material0_7" content_type="model/obj" file="accessories/d435_material0_7.obj"/>
+    <mesh name="accessories_d435_material0_8" content_type="model/obj" file="accessories/d435_material0_8.obj"/>
+    <mesh name="accessories_d435_material0_9" content_type="model/obj" file="accessories/d435_material0_9.obj"/>
+    <mesh name="accessories_d435_material0_10" content_type="model/obj" file="accessories/d435_material0_10.obj"/>
+    <mesh name="accessories_d435_material0_11" content_type="model/obj" file="accessories/d435_material0_11.obj"/>
+    <mesh name="accessories_d435_material0_12" content_type="model/obj" file="accessories/d435_material0_12.obj"/>
+    <mesh name="accessories_d435_material0_13" content_type="model/obj" file="accessories/d435_material0_13.obj"/>
+    <mesh name="accessories_d435_material0_14" content_type="model/obj" file="accessories/d435_material0_14.obj"/>
+    <mesh name="accessories_d435_material0_15" content_type="model/obj" file="accessories/d435_material0_15.obj"/>
+    <mesh name="accessories_d435_material0_16" content_type="model/obj" file="accessories/d435_material0_16.obj"/>
+    <mesh name="accessories_d435_material0_17" content_type="model/obj" file="accessories/d435_material0_17.obj"/>
+    <mesh name="accessories_d435_material0_18" content_type="model/obj" file="accessories/d435_material0_18.obj"/>
+    <mesh name="sick_tim_sick_tim571" content_type="model/obj" file="sick_tim/sick_tim571.obj"/>
+  </asset>
+
+  <default>
+    <default class="arx_l5">
+      <joint frictionloss="0.3" armature="0.005"/>
+      <position inheritrange="1" forcerange="-100 100"/>
+      <default class="finger">
+        <joint frictionloss="0" type="slide"/>
+        <position forcerange="-10 10"/>
+      </default>
+      <default class="visual">
+        <geom group="2" type="mesh" contype="0" conaffinity="0" density="0"/>
+      </default>
+      <default class="collision">
+        <geom group="3" type="capsule"/>
+      </default>
+    </default>
+  </default>
+
+
+  <worldbody>
+    <geom name="ground" size="10 10 2" pos="0 0 -0.01" type="plane" rgba="0.25 0.26 0.25 1"/>
+    <light pos="0.9 0.9 2.5" dir="-0.320815 -0.320815 -0.891154" directional="true" cutoff="4" exponent="20" diffuse="1 1 1" specular="0 0 0"/>
+    <body name="base_footprint" pos="0 0 -0.009">
+      <joint type="free" limited="false" actuatorfrclimited="false"/>
+      <body name="base" pos="0 0 0.127">
+        <inertial pos="0 0 0" mass="125" diaginertia="1.391 6.853 6.125"/>
+        <geom type="mesh" conaffinity="0" group="1" rgba="0 0 0 1" mesh="summit_xls_chassis"/>
+        <geom pos="0 0 0.38062" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mesh="summit_xls_chapas_inox_tapas"/>
+        <geom pos="0 0.28931 0.29062" quat="1 0 0 0" type="mesh" contype="0" conaffinity="0" group="2" mesh="robotnik_logo_chasis"/>
+        <geom pos="0 -0.28931 0.29062" quat="0 0 0 1" type="mesh" contype="0" conaffinity="0" group="2" mesh="robotnik_logo_chasis"/>
+        <geom pos="0.345 0 0" quat="-0.707107 0 0 0.707107" type="mesh" contype="0" conaffinity="0" group="2" mesh="robotnik_logo_chasis"/>
+        <geom pos="-0.345 0 0" quat="0.707107 0 0 0.707107" type="mesh" contype="0" conaffinity="0" group="2" mesh="robotnik_logo_chasis"/>
+        <body name="front_right_wheel_intermediate_link" pos="0.2225 -0.2045 0">
+          <inertial pos="0 0 0" quat="0.707107 0 0 0.707107" mass="6.5" diaginertia="0.0524193 0.0303095 0.0303095"/>
+          <joint name="front_right_wheel_rolling_joint" pos="0 0 0" axis="0 1 0"/>
+          <geom size="0.12 0.0435" quat="0.707107 0.707107 0 0" type="cylinder" conaffinity="0" group="3" rgba="0.2 0.2 0.2 0.5"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="2" rgba="0.2 0.2 0.2 1" mesh="summit_xls_omni_wheel_2"/>
+          <body name="front_right_roller_0_link" pos="0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_0_joint" pos="0 0 0" axis="-0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_1_link" pos="0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_1_joint" pos="0 0 0" axis="-0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_2_link" pos="0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_2_joint" pos="0 0 0" axis="-0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_3_link" pos="-0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_3_joint" pos="0 0 0" axis="-0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_4_link" pos="-0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_4_joint" pos="0 0 0" axis="-0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_5_link" pos="-0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_5_joint" pos="0 0 0" axis="-0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_6_link" pos="-0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_6_joint" pos="0 0 0" axis="0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_7_link" pos="-0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_7_joint" pos="0 0 0" axis="0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_8_link" pos="-0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_8_joint" pos="0 0 0" axis="0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_9_link" pos="0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_9_joint" pos="0 0 0" axis="0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_10_link" pos="0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_10_joint" pos="0 0 0" axis="0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_right_roller_11_link" pos="0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_right_slipping_11_joint" pos="0 0 0" axis="0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+        </body>
+        <body name="front_left_wheel_intermediate_link" pos="0.2225 0.2045 0">
+          <inertial pos="0 0 0" quat="0.707107 0 0 0.707107" mass="6.5" diaginertia="0.0524193 0.0303095 0.0303095"/>
+          <joint name="front_left_wheel_rolling_joint" pos="0 0 0" axis="0 1 0"/>
+          <geom size="0.12 0.0435" quat="0.707107 0.707107 0 0" type="cylinder" conaffinity="0" group="3" rgba="0.2 0.2 0.2 0.5"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="2" rgba="0.2 0.2 0.2 1" mesh="summit_xls_omni_wheel_1"/>
+          <body name="front_left_roller_0_link" pos="0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_0_joint" pos="0 0 0" axis="-0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_1_link" pos="0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_1_joint" pos="0 0 0" axis="0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_2_link" pos="0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_2_joint" pos="0 0 0" axis="0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_3_link" pos="0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_3_joint" pos="0 0 0" axis="0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_4_link" pos="-0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_4_joint" pos="0 0 0" axis="0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_5_link" pos="-0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_5_joint" pos="0 0 0" axis="0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_6_link" pos="-0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_6_joint" pos="0 0 0" axis="0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_7_link" pos="-0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_7_joint" pos="0 0 0" axis="-0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_8_link" pos="-0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_8_joint" pos="0 0 0" axis="-0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_9_link" pos="-0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_9_joint" pos="0 0 0" axis="-0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_10_link" pos="0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_10_joint" pos="0 0 0" axis="-0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="front_left_roller_11_link" pos="0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="front_left_slipping_11_joint" pos="0 0 0" axis="-0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+        </body>
+        <body name="back_right_wheel_intermediate_link" pos="-0.2225 -0.2045 0">
+          <inertial pos="0 0 0" quat="0.707107 0 0 0.707107" mass="6.5" diaginertia="0.0524193 0.0303095 0.0303095"/>
+          <joint name="back_right_wheel_rolling_joint" pos="0 0 0" axis="0 1 0"/>
+          <geom size="0.12 0.0435" quat="0.707107 0.707107 0 0" type="cylinder" conaffinity="0" group="3" rgba="0.2 0.2 0.2 0.5"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="2" rgba="0.2 0.2 0.2 1" mesh="summit_xls_omni_wheel_1"/>
+          <body name="back_right_roller_0_link" pos="0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_0_joint" pos="0 0 0" axis="-0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_1_link" pos="0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_1_joint" pos="0 0 0" axis="0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_2_link" pos="0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_2_joint" pos="0 0 0" axis="0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_3_link" pos="0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_3_joint" pos="0 0 0" axis="0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_4_link" pos="-0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_4_joint" pos="0 0 0" axis="0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_5_link" pos="-0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_5_joint" pos="0 0 0" axis="0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_6_link" pos="-0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_6_joint" pos="0 0 0" axis="0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_7_link" pos="-0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_7_joint" pos="0 0 0" axis="-0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_8_link" pos="-0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_8_joint" pos="0 0 0" axis="-0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_9_link" pos="-0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_9_joint" pos="0 0 0" axis="-0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_10_link" pos="0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_10_joint" pos="0 0 0" axis="-0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_right_roller_11_link" pos="0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_right_slipping_11_joint" pos="0 0 0" axis="-0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+        </body>
+        <body name="back_left_wheel_intermediate_link" pos="-0.2225 0.2045 0">
+          <inertial pos="0 0 0" quat="0.707107 0 0 0.707107" mass="6.5" diaginertia="0.0524193 0.0303095 0.0303095"/>
+          <joint name="back_left_wheel_rolling_joint" pos="0 0 0" axis="0 1 0"/>
+          <geom size="0.12 0.0435" quat="0.707107 0.707107 0 0" type="cylinder" conaffinity="0" group="3" rgba="0.2 0.2 0.2 0.5"/>
+          <geom type="mesh" contype="0" conaffinity="0" group="2" rgba="0.2 0.2 0.2 1" mesh="summit_xls_omni_wheel_2"/>
+          <body name="back_left_roller_0_link" pos="0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_0_joint" pos="0 0 0" axis="-0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_1_link" pos="0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_1_joint" pos="0 0 0" axis="-0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_2_link" pos="0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_2_joint" pos="0 0 0" axis="-0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_3_link" pos="-0.01175 0 0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_3_joint" pos="0 0 0" axis="-0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_4_link" pos="-0.0321016 0 0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_4_joint" pos="0 0 0" axis="-0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_5_link" pos="-0.0438516 0 0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_5_joint" pos="0 0 0" axis="-0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_6_link" pos="-0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_6_joint" pos="0 0 0" axis="0.126337 0.872771 -0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_7_link" pos="-0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_7_joint" pos="0 0 0" axis="0.34516 0.872771 -0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_8_link" pos="-0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_8_joint" pos="0 0 0" axis="0.471497 0.872771 -0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_9_link" pos="0.01175 0 -0.0438516">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_9_joint" pos="0 0 0" axis="0.471497 0.872771 0.126337" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_10_link" pos="0.0321016 0 -0.0321016">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_10_joint" pos="0 0 0" axis="0.34516 0.872771 0.34516" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+          <body name="back_left_roller_11_link" pos="0.0438516 0 -0.01175">
+            <inertial pos="0 0 0" quat="0.707107 0.707107 0 0" mass="0.001" diaginertia="1e-05 1e-05 1e-05"/>
+            <joint name="back_left_slipping_11_joint" pos="0 0 0" axis="0.126337 0.872771 0.471497" limited="false" actuatorfrclimited="false" damping="0.1"/>
+            <geom size="0.08" conaffinity="0" group="3" rgba="0.2 0.2 0.2 1"/>
+          </body>
+        </body>
+        <body name="top_plate_link" pos="0.2 0 0.38">
+          <body name="ur3_base_link" pos="0 0 0.0065" quat="0.707388 0 0 -0.706825">
+            <inertial pos="0 0 0" mass="2" diaginertia="0.00305317 0.00305317 0.005625"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" material="ur3_base_link_mat_1" mesh="ur3_visual_base_material_001"/>
+            <geom type="mesh" contype="0" conaffinity="0" group="1" material="ur3_base_link_mat_2" mesh="ur3_visual_base_material_002"/>
+            <geom type="mesh" group="3" rgba="0.9373 0.2667 0.2667 1" mesh="ur3_collision_base"/>
+            <body name="shoulder_link" pos="0 0 0.1519">
+              <inertial pos="0 0 0" mass="2" diaginertia="0.00809316 0.00809316 0.005625"/>
+              <joint name="shoulder_pan_joint" pos="0 0 0" axis="0 0 1" limited="true" range="-3.14159 3.14159"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" material="shoulder_link_mat_1" mesh="ur3_visual_shoulder_verbindung_001"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" material="shoulder_link_mat_2" mesh="ur3_visual_shoulder_blau_001"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" material="shoulder_link_mat_3" mesh="ur3_visual_shoulder_grey_001"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" material="shoulder_link_mat_4" mesh="ur3_visual_shoulder_verbindung_001_2"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" material="shoulder_link_mat_5" mesh="ur3_visual_shoulder_grey_001_2"/>
+              <geom type="mesh" contype="0" conaffinity="0" group="1" material="shoulder_link_mat_6" mesh="ur3_visual_shoulder_verbindung_001_3"/>
+              <geom type="mesh" group="3" rgba="0.9373 0.2667 0.2667 1" mesh="ur3_collision_shoulder"/>
+              <body name="upper_arm_link" pos="0 0.1198 0" quat="0.707107 0 0.707107 0">
+                <inertial pos="0 0 0.121825" mass="3.42" diaginertia="0.0217285 0.0217285 0.00961875"/>
+                <joint name="shoulder_lift_joint" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_1" mesh="ur3_visual_upperarm_blau"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_2" mesh="ur3_visual_upperarm_verbindung"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_3" mesh="ur3_visual_upperarm_verbindung_2"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_4" mesh="ur3_visual_upperarm_verbindung_3"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_5" mesh="ur3_visual_upperarm_verbindung_4"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_6" mesh="ur3_visual_upperarm_rohr"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_7" mesh="ur3_visual_upperarm_verbindung_5"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_8" mesh="ur3_visual_upperarm_verbindung_6"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_9" mesh="ur3_visual_upperarm_verbindung_7"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_10" mesh="ur3_visual_upperarm_blau_2"/>
+                <geom type="mesh" contype="0" conaffinity="0" group="1" material="upper_arm_link_mat_11" mesh="ur3_visual_upperarm_verbindung_8"/>
+                <geom type="mesh" group="3" rgba="0.9373 0.2667 0.2667 1" mesh="ur3_collision_upperarm"/>
+                <body name="forearm_link" pos="0 -0.0925 0.24365">
+                  <inertial pos="0 0 0.106625" mass="1.26" diaginertia="0.00654681 0.00654681 0.00354375"/>
+                  <joint name="elbow_joint" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"/>
+                  <geom type="mesh" contype="0" conaffinity="0" group="1" material="forearm_link_mat_1" mesh="ur3_visual_forearm_verbindung"/>
+                  <geom type="mesh" contype="0" conaffinity="0" group="1" material="forearm_link_mat_2" mesh="ur3_visual_forearm_rohr"/>
+                  <geom type="mesh" contype="0" conaffinity="0" group="1" material="forearm_link_mat_3" mesh="ur3_visual_forearm_verbindung_2"/>
+                  <geom type="mesh" contype="0" conaffinity="0" group="1" material="forearm_link_mat_4" mesh="ur3_visual_forearm_verbindung_3"/>
+                  <geom type="mesh" contype="0" conaffinity="0" group="1" material="forearm_link_mat_5" mesh="ur3_visual_forearm_verbindung_4"/>
+                  <geom type="mesh" contype="0" conaffinity="0" group="1" material="forearm_link_mat_6" mesh="ur3_visual_forearm_blau"/>
+                  <geom type="mesh" group="3" rgba="0.9373 0.2667 0.2667 1" mesh="ur3_collision_forearm"/>
+                  <body name="wrist_1_link" pos="0 0 0.21325" quat="0.707107 0 0.707107 0">
+                    <inertial pos="0 0.08505 0" mass="0.8" diaginertia="0.002085 0.002085 0.00225"/>
+                    <joint name="wrist_1_joint" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"/>
+                    <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_1_link_mat_1" mesh="ur3_visual_wrist1_verbindung"/>
+                    <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_1_link_mat_2" mesh="ur3_visual_wrist1_verbindung_2"/>
+                    <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_1_link_mat_3" mesh="ur3_visual_wrist1_blau"/>
+                    <geom type="mesh" group="3" rgba="0.9373 0.2667 0.2667 1" mesh="ur3_collision_wrist1"/>
+                    <body name="wrist_2_link" pos="0 0.08505 0">
+                      <inertial pos="0 0 0.08535" mass="0.8" diaginertia="0.002085 0.002085 0.00225"/>
+                      <joint name="wrist_2_joint" pos="0 0 0" axis="0 0 1" limited="true" range="-3.14159 3.14159"/>
+                      <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_2_link_mat_1" mesh="ur3_visual_wrist2_blau"/>
+                      <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_2_link_mat_2" mesh="ur3_visual_wrist2_verbindung"/>
+                      <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_2_link_mat_3" mesh="ur3_visual_wrist2_verbindung_2"/>
+                      <geom type="mesh" group="3" rgba="0.9373 0.2667 0.2667 1" mesh="ur3_collision_wrist2"/>
+                      <body name="wrist_3_link" pos="0 0 0.08545">
+                        <inertial pos="0 0.0619 0" quat="0.707107 0.707107 0 0" mass="0.35" diaginertia="0.000136267 0.000136267 0.0001792"/>
+                        <joint name="wrist_3_joint" pos="0 0 0" axis="0 1 0" limited="true" range="-3.14159 3.14159"/>
+                        <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_3_link_mat_1" mesh="ur3_visual_wrist3_rohr"/>
+                        <geom type="mesh" contype="0" conaffinity="0" group="1" material="wrist_3_link_mat_2" mesh="ur3_visual_wrist3_verbindung"/>
+                        <geom type="mesh" group="3" rgba="0.9373 0.2667 0.2667 1" mesh="ur3_collision_wrist3"/>
+                        <body name="ee_link" pos="0 0.0819 0" quat="0.707107 0 0 0.707107">
+                          <geom size="0.005 0.005 0.005" pos="-0.01 0 0" type="box" group="3" rgba="0.9373 0.2667 0.2667 1"/>
+                            <!-- ====== 开始插入新夹爪 ====== -->
+                            <body name="gripper_base" pos="0 0 0" quat="-3.67321e-06 1 0 0">
+                              <!-- 注意：pos 可能需要根据实际安装情况微调，这里先沿用原文件数值或设为 0 -->
+                              <inertial pos="0.041697 2.4368e-05 0.00014464" quat="0.5 0.5 -0.5 0.5" mass="0.44089" diaginertia="0.0005 0.00038 0.00028"/>
+                              <site name="ft_site" pos="0 0 0" size="0.004" rgba="1 0 0 0.4"/>
+                              <!-- 夹爪旋转关节 -->
+                              <!-- <joint name="joint6" axis="1 0 0" range="-3.14 3.14"/> -->
+                              
+                              <geom mesh="gripper_base" material="black_mat" class="visual"/>
+                              <geom mesh="gripper_base" class="collision"/>
+                              
+                              <!-- 手指 1 -->
+                              <body name="gripper1" pos="0.08657 0.024896 -0.0002436" gravcomp="1">
+                                <inertial pos="-0.00035522 -0.007827 -0.0029883" quat="0.5 0.5 0.5 0.5" mass="0.064798" diaginertia="3e-05 3e-05 2e-05"/>
+                                <joint name="joint7" axis="0 1 0" class="finger" range="0 0.044"/>
+                                <geom mesh="gripper1" material="black_mat" class="visual"/>
+                                <geom type="box" size=".02 .002 .00525" pos="0.05 -0.023 0" rgba="1 0 0 1" class="collision"/>
+                                <geom type="box" size=".015 .002 .018" pos="0.015 -0.023 0" rgba="0 0 1 1" class="collision"/>
+                              </body>
+                              
+                              <!-- 手指 2 -->
+                              <body name="gripper2" pos="0.08657 -0.0249 -0.00024366" gravcomp="1">
+                                <inertial pos="-0.000355223 0.00782769 0.00242006" quat="0.5 0.5 0.5 0.5" mass="0.0647982" diaginertia="3e-05 3e-05 2e-05"/>
+                                <joint name="joint8" axis="0 1 0" class="finger" range="-0.044 0"/>
+                                <geom mesh="gripper2" material="black_mat" class="visual"/>
+                                <geom type="box" size=".02 .002 .00525" pos="0.05 0.023 0" rgba="1 0 0 1" class="collision"/>
+                                <geom type="box" size=".015 .002 .018" pos="0.015 0.023 0" rgba="0 0 1 1" class="collision"/>
+                              </body>
+                            </body>
+                            <!-- ====== 结束插入新夹爪 ====== -->
+                        </body>
+                        <body name="tool0" pos="0 0.0819 0" quat="0.707107 -0.707107 0 0"/>
+                      </body>
+                    </body>
+                  </body>
+                </body>
+              </body>
+            </body>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <equality>
+    <joint joint1="joint7" joint2="joint8" polycoef="0 -1 0 0 0"/>
+  </equality>
+
+  <sensor>
+    <force  name="wrist_force"  site="ft_site"/>
+    <torque name="wrist_torque" site="ft_site"/>
+  </sensor>
+
+
+
+  <actuator>
+    <general name="front_right_wheel_rolling_joint" joint="front_right_wheel_rolling_joint" ctrlrange="-10 10"/>
+    <general name="front_left_wheel_rolling_joint" joint="front_left_wheel_rolling_joint" ctrlrange="-10 10"/>
+    <general name="back_right_wheel_rolling_joint" joint="back_right_wheel_rolling_joint" ctrlrange="-10 10"/>
+    <general name="back_left_wheel_rolling_joint" joint="back_left_wheel_rolling_joint" ctrlrange="-10 10"/>
+    <general name="shoulder_pan_joint_motor" joint="shoulder_pan_joint" ctrllimited="true" ctrlrange="-330 330"/>
+    <general name="shoulder_lift_joint_motor" joint="shoulder_lift_joint" ctrllimited="true" ctrlrange="-330 330"/>
+    <general name="elbow_joint_motor" joint="elbow_joint" ctrllimited="true" ctrlrange="-150 150"/>
+    <general name="wrist_1_joint_motor" joint="wrist_1_joint" ctrllimited="true" ctrlrange="-54 54"/>
+    <general name="wrist_2_joint_motor" joint="wrist_2_joint" ctrllimited="true" ctrlrange="-54 54"/>
+    <general name="wrist_3_joint_motor" joint="wrist_3_joint" ctrllimited="true" ctrlrange="-54 54"/>
+
+    <!-- 控制 joint6 (底座旋转) -->
+    <!-- <position name="joint6" joint="joint6" class="arx_l5" kp="10" kv="1.5"/> -->
+
+    <!-- 控制 joint7 (手指开合)，joint8 会通过 equality 自动跟随 -->
+    <!-- <position name="gripper" joint="joint7" class="finger" kp="40" kv="5"/> -->
+  </actuator>
+
+</mujoco>
